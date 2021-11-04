@@ -9,11 +9,9 @@
 </head>
 
 <body>
-
     <div>
-        class="counter col_fourth">
         <h2 class="timer count-title" id="count-number" data-to="300" data-speed="1000"></h2>
-        <p class="count-text ">小月博客</p>
+        <h2 class="timer count-title" id="count-number" data-to="3400" data-speed="800"></h2>
     </div>
 
     <script>
@@ -74,7 +72,8 @@
             onComplete: null
         };
         function formatter(b, a) {
-            return b.toFixed(2)
+            // return b.toFixed(2)
+            return b
         }
         $("#count-number").data("countToOptions", {
             formatter: function (b, a) {
