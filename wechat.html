@@ -20,12 +20,12 @@
         $.ajax({
             contentType: 'application/json',
             type: 'POST',
-            url: "http://165.154.24.66/api/wxmainapi/getJsConfig?a=b",
+            url: "http://165.154.24.66/api/wxmainapi/getJsConfig?appid=wx01b20560cbcad31e",
             dataType: "json",
             data: JSON.stringify([{
                 "debug": true,
                 "jsApiList": ["onMenuShareTimeline", "onMenuShareAppMessage"],
-                "url": "http://165.154.24.66"
+                "url": location.href
             }]),
             beforeSend: function (req) {
                 req.setRequestHeader('authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTYzNjM1NDY1MywiZXhwIjoxNjY3ODkwNjUzfQ.0MNxnYKehuZfLs2CJniUEVuloa29VPRdxTcevIZbpVs')
