@@ -28,6 +28,9 @@
                 "jsApiList": ["onMenuShareTimeline", "onMenuShareAppMessage"],
                 "url": "http://165.154.24.66"
             }],
+            beforeSend: function(req) {
+                req.setRequestHeader('authorization','Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTYzNjM1NDY1MywiZXhwIjoxNjY3ODkwNjUzfQ.0MNxnYKehuZfLs2CJniUEVuloa29VPRdxTcevIZbpVs')
+            },
             success: function (message) {
                 console.log('success', message);
             },
