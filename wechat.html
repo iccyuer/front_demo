@@ -17,15 +17,35 @@
     <script>
         //这里【url参数一定是去参的本网址】
         console.log('dasdasd')
-        // $.post("http://165.154.24.66:8094/api/wxmainapi/getJsConfig",
-        $.post("http://165.154.24.66:9003/api/wxmainapi/getJsConfig",
-            [{
+
+        $.ajax({
+            contentType: 'application/json',
+            type: 'POST',
+            url: "http://165.154.24.66/api/wxmainapi/test?a=b",
+            dataType: "json",
+            data: [{
                 "debug": false,
                 "jsApiList": ["onMenuShareTimeline", "onMenuShareAppMessage"],
                 "url": "http://165.154.24.66"
-            }],"json").then(function (res) {
-                console.log('res', res)
-            }, true)
+            }],
+            success: function (message) {
+                console.log('success', message);
+            },
+            error: function (message) {
+                console.log('error', message);
+            }
+        });
+
+
+        // $.post("http://165.154.24.66:8094/api/wxmainapi/getJsConfig",
+        // $.post("http://165.154.24.66/api/wxmainapi/test?a=b",
+        //     [{
+        //         "debug": false,
+        //         "jsApiList": ["onMenuShareTimeline", "onMenuShareAppMessage"],
+        //         "url": "http://165.154.24.66"
+        //     }],"json").then(function (res) {
+        //         console.log('res', res)
+        //     }, true)
 
         // $.get("获取微信认证参数的网址?url=当前网页的网址", function (data) {
         //     var jsondata = $.parseJSON(data);
