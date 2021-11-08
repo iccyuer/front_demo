@@ -11,34 +11,48 @@
 
 <body>
     <h3>wechat</h3>
-
+    <button id="scanQRCode">扫码</button>
 
 
     <script>
         //这里【url参数一定是去参的本网址】
-        console.log('dasdasd')
 
         $.ajax({
             contentType: 'application/json',
             type: 'POST',
-            url: "http://165.154.24.66/api/wxmainapi/test?a=b",
+            url: "http://165.154.24.66/api/wxmainapi/getJsConfig?a=b",
             dataType: "json",
             data: JSON.stringify([{
                 "debug": false,
                 "jsApiList": ["onMenuShareTimeline", "onMenuShareAppMessage"],
                 "url": "http://165.154.24.66"
             }]),
-            beforeSend: function(req) {
-                req.setRequestHeader('authorization','Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTYzNjM1NDY1MywiZXhwIjoxNjY3ODkwNjUzfQ.0MNxnYKehuZfLs2CJniUEVuloa29VPRdxTcevIZbpVs')
+            beforeSend: function (req) {
+                req.setRequestHeader('authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTYzNjM1NDY1MywiZXhwIjoxNjY3ODkwNjUzfQ.0MNxnYKehuZfLs2CJniUEVuloa29VPRdxTcevIZbpVs')
             },
-            success: function (message) {
+            success: function (config) {
+                wx.config(config)
                 console.log('success', message);
             },
             error: function (message) {
                 console.log('error', message);
             }
         });
+        wx.ready(function () {
+            //点击按钮扫描二维码
+            document.querySelector('#scanQRCode').onclick = function () {
+                wx.scanQRCode({
+                    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                    scanType: ["qrCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                    success: function (res) {
+                        var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                        alert("扫描结果：" + result);
+                        window.location.href = result;//因为我这边是扫描后有个链接，然后跳转到该页面
+                    }
+                });
+            };
 
+        });
 
         // $.post("http://165.154.24.66:8094/api/wxmainapi/getJsConfig",
         // $.post("http://165.154.24.66/api/wxmainapi/test?a=b",
@@ -71,28 +85,6 @@
             alert("出错了：" + res.errMsg);//这个地方的好处就是wx.config配置错误，会弹出窗口哪里错误，然后根据微信文档查询即可。
         });
 
-        wx.ready(function () {
-            wx.checkJsApi({
-                jsApiList: ['scanQRCode'],
-                success: function (res) {
-
-                }
-            });
-
-            //点击按钮扫描二维码
-            document.querySelector('#scanQRCode').onclick = function () {
-                wx.scanQRCode({
-                    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-                    scanType: ["qrCode"], // 可以指定扫二维码还是一维码，默认二者都有
-                    success: function (res) {
-                        var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-                        alert("扫描结果：" + result);
-                        window.location.href = result;//因为我这边是扫描后有个链接，然后跳转到该页面
-                    }
-                });
-            };
-
-        });
     </script>
 
 </body>
