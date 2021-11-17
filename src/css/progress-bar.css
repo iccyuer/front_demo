@@ -1,0 +1,36 @@
+#progress {
+    padding-top: 10px;
+}
+
+.progress-bar {
+    width: 200px;
+    height: 100px;
+    background-color: #999999;
+}
+
+.progress-bar .progress-bar-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.progress-bar .progress-bar-body {
+    position: relative;
+}
+
+.progress-bar .progress-bar-body .back {
+    position: absolute;
+    top: 0;
+    width: 180px;
+    height: 4px;
+    background-color: #666666;
+}
+
+.progress-bar .progress-bar-body .frot {
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 4px;
+    background-color: #222222;
+    transition: width .8s ease-in-out;
+}
