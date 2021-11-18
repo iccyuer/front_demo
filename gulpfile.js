@@ -9,6 +9,7 @@ const uglify = require("gulp-uglify");
 const javascriptObfuscator = require('gulp-javascript-obfuscator');
 const less = require("gulp-less");
 
+const babel = require("gulp-babel"); // babel-preset-env   banel-preset-es2015
 
 gulp.task('clean', () => {
     return gulp.src(['dist/', 'rev/'], {  allowEmpty: true })
@@ -33,6 +34,7 @@ gulp.task('minify-css', () => {
 
 gulp.task('minify-js', () => {
     return gulp.src(['src/js/*.js', '!src/js/*.min.*'])
+        .pipe(babel()) // babel
         .pipe(uglify())  // 压缩
         // .pipe(javascriptObfuscator({compact: true})) // 混淆
         .pipe(rev())
@@ -85,7 +87,7 @@ gulp.task('watch', () => {
 gulp.task('server', async () => {
     connect.server({
         root: 'dist',
-        livereload: true
+        livereload: true // 并不能热加载，需要connect.reload()
     })
 });
 
