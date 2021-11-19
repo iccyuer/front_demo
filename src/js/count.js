@@ -55,13 +55,13 @@ $.fn.countTo.defaults = {
     onComplete: null
 };
 function formatter(b, a) {
-    // return b.toFixed(2)
-    return b
+    return b.toFixed(0)
+    // return b
 }
 $("#count-number").data("countToOptions", {
     formatter: function (b, a) {
         // return b.toFixed(2).replace(/\B(?=(?:\d{3})+(?!\d))/g, ",")
-        return b
+        return b.toFixed(0)
     }
 });
 $(".timer").each(count);

@@ -16,7 +16,7 @@
         <div class="inner">inner</div>
     </div>
     <div id="progress">
-        <div class="progress-bar">
+        <!-- <div class="progress-bar">
             <div class="progress-bar-title">
                 <span>命中率</span>
                 <span>200</span>
@@ -25,15 +25,63 @@
                 <div class="back"></div>
                 <div class="frot"></div>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <script>
-        setTimeout(() => {
-            $(".progress-bar-body").find(".frot").css("width", "100px");
-        }, 0);
+        // setTimeout(() => {
+        //     $(".progress-bar-body").find(".frot").css("width", "100px");
+        // }, 0);
 
+        let list = [
+            { max: 100, value: 80 },
+            { max: 200, value: 88 },
+            { max: 300, value: 40 },
+            { max: 150, value: 110 },
+            { max: 30, value: 5 },
+            { max: 50, value: 20 },
+            { max: 70, value: 23 },
+        ]
+
+        function render(list) {
+            var tpl = list.map(item => {
+                return renderItem(item)
+            }).join('')
+            $('#progress').html(tpl);
+        }
+
+        function renderItem(item) {
+            return '<div class="progress-bar">' +
+                '<div class="progress-bar-title">' +
+                '<span>命中率</span>' +
+                '<span class="timer count-title" id="count-number" data-to="'+item.value+'" data-speed="800"></span>'+
+                // '<span>' + item.value + '</span>' +
+                '</div>' +
+                '<div class="progress-bar-body">' +
+                '<div class="back" value="' + item.max + '"></div>' +
+                '<div class="frot" value="' + item.value + '"></div>' +
+                '</div>' +
+                '</div>'
+        }
+        render(list);
+
+
+        function run() {
+            $('#progress > .progress-bar').each(bar)
+            function bar() {
+                var b = $(this);
+                var max = b.find('.back').attr('value')
+                var value = b.find('.frot').attr('value')
+                // console.log(max, value)
+                b.find('.frot').css("width", parseInt(value / max * 180) + "px");
+            }
+        }
+
+        setTimeout(() => {
+            run();
+        }, 0)
     </script>
+    <script src="./js/count.js"></script>
 </body>
 
 </html>
