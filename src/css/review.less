@@ -1,0 +1,79 @@
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}
+.flex{
+    display: flex;
+    align-items: center;
+}
+.flex-shrink-0{
+    flex-shrink: 0;
+}
+.flex-grow-1{
+    flex-grow: 1;
+}
+.flex-align-items-start{
+    align-items: flex-start;
+}
+.flex-justify-content-space-around{
+    justify-content: space-around;
+}
+.flex-justify-content-space-between{
+    justify-content: space-between;
+}
+
+.review_page{
+    // width: 1920px;
+    // height: 1080px;
+
+    .play_info{
+        display: inline-block;
+        width: 200px;
+        align-self: flex-start;
+    }
+
+    .review_detail{
+        display: inline-block;
+
+        .play_detail{
+            .general{
+                width: 300px;
+                background-color: #999;
+
+                .player_role{
+                    padding: 0 20px;
+
+                    .headimg{
+                        width: 50px;
+                        height: 50px;
+                    }
+
+                    .name{
+                        font-weight: bold;
+                    }
+                }
+
+                .comprehensive_score{
+                    text-align: center;
+
+                    .score{
+                        font-size: 33px;
+                        font-weight: bold;
+                    }
+                }
+    
+                .play_chart{
+                    width: 300px;
+                    height: 250px;
+                }
+            }
+    
+            .play_data{
+                // height: 100%;
+                background-color: bisque;
+            }
+
+        }
+
+    }
+}
