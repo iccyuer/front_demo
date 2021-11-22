@@ -22,6 +22,46 @@
     justify-content: space-between;
 }
 
+
+
+.progress-bar {
+    width: 200px;
+    height: 80px;
+    background-color: #999999;
+
+    .progress-bar-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+        .count-title{
+            min-width: 50px;
+        }
+    }
+
+    .progress-bar-body {
+        position: relative;
+
+        .back {
+            position: absolute;
+            top: 0;
+            width: 180px;
+            height: 4px;
+            background-color: #666666;
+        }
+
+        .frot {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 4px;
+            background-color: #222222;
+            transition: width .8s ease-in-out;
+        }
+    }
+}
+
+
 .review_page{
     // width: 1920px;
     // height: 1080px;
@@ -37,11 +77,12 @@
 
         .play_detail{
             .general{
+                align-self: flex-start;
                 width: 300px;
                 background-color: #999;
 
                 .player_role{
-                    padding: 0 20px;
+                    padding: 30px 20px;
 
                     .headimg{
                         width: 50px;
@@ -55,6 +96,7 @@
 
                 .comprehensive_score{
                     text-align: center;
+                    margin: 30px 0;
 
                     .score{
                         font-size: 33px;
@@ -64,12 +106,13 @@
     
                 .play_chart{
                     width: 300px;
-                    height: 250px;
+                    height: 260px;
                 }
             }
     
             .play_data{
                 // height: 100%;
+                align-self: flex-start;
                 background-color: bisque;
             }
 

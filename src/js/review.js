@@ -1,6 +1,5 @@
 function renderChart(dom, data) {
     if (!dom) return;
-    console.log(dom, data)
     var myChart = echarts.init(dom);
     var option;
     const lineStyle = {
@@ -82,49 +81,101 @@ renderChart(document.getElementsByClassName('play_chart')[0], [[55, 37, 56]]);
 
 
 
-reviewdata1 = [
-    {
-        title: '基础任务',
-        data: [
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 }
-        ]
-    },
-    {
-        title: '射击技巧',
-        data: [
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 }
-        ]
-    },
-    {
-        title: '战术技术',
-        data: [
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 },
-            { key: '人质安全', value: 134, max: 200 }
-        ]
-    },
+function renderProgressBar(data) {
 
-]
+    var reviewdata = [
+        {
+            title: '基础任务',
+            data: [
+                { key: '人质安全1', value: 14, max: 200 },
+                { key: '人质安全2', value: 14, max: 200 },
+                { key: '人质安全3', value: 14, max: 200 },
+                { key: '人质安全4', value: 134, max: 200 },
+                { key: '人质安全5', value: 134, max: 200 },
+                { key: '人质安全6', value: 134, max: 200 },
+                { key: '人质安全7', value: 134, max: 200 },
+                { key: '人质安全8', value: 134, max: 200 },
+                { key: '人质安全9', value: 134, max: 200 }
+            ]
+        },
+        {
+            title: '射击技巧',
+            data: [
+                { key: '人质3安全', value: 134, max: 200 },
+                { key: '人4质安全', value: 134, max: 200 },
+                { key: '5人质安全', value: 134, max: 200 },
+                { key: '人6质安全', value: 134, max: 200 },
+                { key: '人质7安全', value: 134, max: 200 },
+                { key: '人质8安全', value: 134, max: 200 },
+                { key: '人4质安全', value: 134, max: 200 },
+                { key: '人质55安全', value: 134, max: 200 },
+                { key: '人质5安全', value: 134, max: 200 }
+            ]
+        },
+        {
+            title: '战术技术',
+            data: [
+                { key: '人质安全', value: 134, max: 200 },
+                { key: '人质安全', value: 134, max: 200 },
+                { key: '人质安全', value: 134, max: 200 },
+                { key: '人质安全', value: 134, max: 200 },
+                { key: '人质安全', value: 134, max: 200 },
+                { key: '人质安全', value: 134, max: 200 },
+                { key: '人质安全', value: 134, max: 200 },
+                { key: '人质安全', value: 134, max: 200 },
+                { key: '人质安全', value: 134, max: 200 }
+            ]
+        },
+    ]
 
+    function render(reviewdata) {
+        var tpl = reviewdata.map((item, index) => {
+            return '<div class="play_data_item">' +
+                '<div>' + item.title + '</div>' +
+                '<div class="progress_box progress_box_' + index + '">' + renderProgress(item.data) + '</div>'
+        })
+        $('.play_data').html(tpl);
+    }
+
+    function renderProgress(list) {
+        var tpl = list.map(item => {
+            return renderItem(item)
+        }).join('')
+        return tpl;
+    }
+
+    function renderItem(item) {
+        return '<div class="progress-bar">' +
+            '<div class="progress-bar-title flex">' +
+            '<span>' + item.key + '</span>' +
+            '<span class="timer count-title" id="count-number" data-to="' + item.value + '" data-speed="800"></span>' +
+            '</div>' +
+            '<div class="progress-bar-body">' +
+            '<div class="back" value="' + item.max + '"></div>' +
+            '<div class="frot" value="' + item.value + '"></div>' +
+            '</div>' +
+            '</div>'
+    }
+
+
+    function run() {
+        $('.play_data  .progress-bar').each(bar)
+        function bar() {
+            var b = $(this);
+            var max = b.find('.back').attr('value');
+            var value = b.find('.frot').attr('value');
+            // console.log(max, value)
+            b.find('.frot').css("width", parseInt(value / max * 180) + "px");
+        }
+    }
+
+    setTimeout(() => {
+        run();
+    }, 0)
+
+
+    render(reviewdata)
+}
+
+
+renderProgressBar()
