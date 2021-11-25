@@ -21,102 +21,303 @@
 .flex-justify-content-space-between{
     justify-content: space-between;
 }
+.blod{
+    font-weight: bold;
+}
 
 
 
 .progress-bar {
-    width: 200px;
-    height: 80px;
-    background-color: #999999;
+    width: 292px;
+    height: 42px;
+    background: url(../images/play_data_body.png) 100% 100%;
+    margin-bottom: 14px;
+    position: relative;
 
     .progress-bar-title {
         display: flex;
         align-items: center;
-        justify-content: space-around;
+        justify-content: space-between;
+        padding: 10px 14px 0 11px;
 
         .count-title{
             min-width: 50px;
+            text-align: right;
         }
     }
 
     .progress-bar-body {
-        position: relative;
-
+        position: absolute;
+        bottom: 0;
+        
         .back {
-            position: absolute;
-            top: 0;
+            // position: absolute;
+            // top: 0;
             width: 180px;
             height: 4px;
-            background-color: #666666;
         }
 
         .frot {
-            position: absolute;
-            top: 0;
+            // position: absolute;
+            // top: 0;
             width: 0;
             height: 4px;
-            background-color: #222222;
+            background: linear-gradient(94deg, #2D7BFB, #418AF7);
             transition: width .8s ease-in-out;
         }
     }
 }
 
+.inset-border{
+    position: relative;
+    border: 1px solid #5376F9;
+    box-shadow: 0 0 20px 0 #5376F9 inset;
+}
 
-.review_page{
-    // width: 1920px;
-    // height: 1080px;
+.arrow{
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: url(../images/arrow.png) 100% 100%;
+}
+.arrow-1{
+    left: 2px;
+    top: 2px;
+}
+.arrow-2{
+    right: 2px;
+    top: 2px;
+    transform: rotate(90deg);
+}
+.arrow-3{
+    right: 2px;
+    bottom: 2px;
+    transform: rotate(180deg);
+}
+.arrow-4{
+    left: 2px;
+    bottom: 2px;
+    transform: rotate(270deg);
+}
 
-    .play_info{
-        display: inline-block;
-        width: 200px;
-        align-self: flex-start;
+.border{
+    position: absolute;
+}
+.border-1{
+    width: 80px;
+    height: 60px;
+    left: -4px;
+    top: -4px;
+    background: url(../images/border_1.png) 100% 100%;
+}
+.border-2{
+    width: 80px;
+    height: 60px;
+    right: -4px;
+    top: -4px;
+    background: url(../images/border_2.png) 100% 100%;
+}
+.border-3{
+    width: 120px;
+    height: 100px;
+    right: -4px;
+    bottom: -4px;
+    background: url(../images/border_3.png) 100% 100%;
+}
+.border-4{
+    width: 80px;
+    height: 60px;
+    left: -4px;
+    bottom: -4px;
+    background: url(../images/border_4.png) 100% 100%;
+}
+
+body{
+    background-color: #010629;
+    width: 1920px;
+    height: 1080px;
+    margin: auto;
+    color: #23CEFD;
+    font-size: 14px;
+
+    .head{
+        width: 1920px;
+        height: 60px;
+        background: url(../images/head.png) no-repeat 100% 100%;
+        background-position: center bottom;
+        text-align: center;
+
+        img{
+            width: 96px;
+            height: 24px;
+            margin-top: 20px;
+        }
     }
 
-    .review_detail{
-        display: inline-block;
-
-        .play_detail{
-            .general{
-                align-self: flex-start;
-                width: 300px;
-                background-color: #999;
-
-                .player_role{
-                    padding: 30px 20px;
-
-                    .headimg{
-                        width: 50px;
-                        height: 50px;
-                    }
-
-                    .name{
-                        font-weight: bold;
-                    }
-                }
-
-                .comprehensive_score{
-                    text-align: center;
-                    margin: 30px 0;
-
-                    .score{
-                        font-size: 33px;
-                        font-weight: bold;
-                    }
-                }
     
-                .play_chart{
-                    width: 300px;
-                    height: 260px;
+    .review_page{
+        margin-top: 20px;
+
+        .record-info{
+            display: inline-block;
+            width: 230px;
+            height: 1000px;
+            align-self: flex-start;
+            position: relative;
+
+            .title{
+                width: 172px;
+                height: 30px;
+                background: url(../images/record_info_bg.png) 100% 100%;
+                margin-left: 22px;
+                margin-top: 15px;
+
+                img{
+                    margin: 0 4px 0 9px;
                 }
             }
+
+            .record-info-list{
+                margin-left: 27px;
+                margin-top: 2px;
+
+                .record-info-item{
+                    margin-top: 40px;
+                    .label{
+
+                    }
+                    .content{
+                        margin-left: 25px;
+                    }
+                }
+            }
+        }
+
+        .review_detail{
+            display: inline-block;
+            align-self: flex-start;
+
+            .button_title{
+                margin-left: 30px;
+
+                div{
+                    width: 130px;
+                    height: 32px;
+                    background: linear-gradient(269deg, #56CCF2, #2A84FC);
+                    border-radius: 4px;
+                    color: white;
+                    text-align: center;
+                    line-height: 32px;
+                    font-size: 16px;
+                    cursor: pointer;
+                }
+
+                .personal{
+                    margin-left: 20px;
+                }
+            }
+
+            .play_detail{
+                margin-left: 35px;
+
+                .play-item{
+                    margin-top: 35px;
+
+                    .general{
+                        align-self: flex-start;
+                        width: 585px;
+                        height: 444px;
+                        background: rgba(22, 30, 58, 0);
+                        border: 1px solid #5376F9;
+                        opacity: 0.8;
     
-            .play_data{
-                // height: 100%;
-                align-self: flex-start;
-                background-color: bisque;
+                        .player_role{
+                            width: 526px;
+                            height: 89px;
+                            margin: 28px 0 0 29px;
+                            background: url(../images/role_bg.png) 100% 100%;
+    
+                            .headimg{
+                                width: 62px;
+                                height: 62px;
+                                margin-left: 10px;
+                            }
+
+                            .index{
+                                width: 60px;
+                                height: 28px;
+                                margin-left: 7px;
+                                margin-top: 2px;
+                            }
+    
+                            .name{
+                                font-weight: bold;
+                                margin-left: 7px;
+                                margin-top: 7px;
+                            }
+
+                            .comprehensive_score{
+                                text-align: right;
+                                margin-right: 18px;
+        
+                                .score{
+                                    font-size: 33px;
+                                    font-weight: bold;
+                                }
+                            }
+                        }
+    
+            
+                        .play_chart{
+                            margin: 30px auto;
+                            width: 300px;
+                            height: 260px;
+                        }
+                    }
+            
+                    .play_data{
+                        width: 996px;
+                        height: 444px;
+                        opacity: 0.8;
+                        margin-left: 40px;
+                        align-self: flex-start;
+                        
+
+                        .play_data_item{
+                            align-self: flex-start;
+                            margin-top: 30px;
+
+                            .play_data_title{
+                                width: 292px;
+                                height: 48px;
+                                background: url(../images/play_data_title.png) 100% 100%;
+                                text-align: center;
+                                font-size: 16px;
+                                line-height: 48px;
+                                margin-bottom: 18px;
+                            }
+                        }
+
+                    }
+                }
             }
 
         }
-
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -7,7 +7,7 @@ function renderChart(dom, data) {
         opacity: 0.5
     };
     option = {
-        backgroundColor: '#999',
+        backgroundColor: 'transparent',
         title: {
             text: 'AQI - Radar',
             left: 'center',
@@ -92,10 +92,7 @@ function renderProgressBar(data) {
                 { key: '人质安全3', value: 14, max: 200 },
                 { key: '人质安全4', value: 134, max: 200 },
                 { key: '人质安全5', value: 134, max: 200 },
-                { key: '人质安全6', value: 134, max: 200 },
-                { key: '人质安全7', value: 134, max: 200 },
-                { key: '人质安全8', value: 134, max: 200 },
-                { key: '人质安全9', value: 134, max: 200 }
+                { key: '人质安全6', value: 134, max: 200 }
             ]
         },
         {
@@ -105,11 +102,6 @@ function renderProgressBar(data) {
                 { key: '人4质安全', value: 134, max: 200 },
                 { key: '5人质安全', value: 134, max: 200 },
                 { key: '人6质安全', value: 134, max: 200 },
-                { key: '人质7安全', value: 134, max: 200 },
-                { key: '人质8安全', value: 134, max: 200 },
-                { key: '人4质安全', value: 134, max: 200 },
-                { key: '人质55安全', value: 134, max: 200 },
-                { key: '人质5安全', value: 134, max: 200 }
             ]
         },
         {
@@ -120,10 +112,6 @@ function renderProgressBar(data) {
                 { key: '人质安全', value: 134, max: 200 },
                 { key: '人质安全', value: 134, max: 200 },
                 { key: '人质安全', value: 134, max: 200 },
-                { key: '人质安全', value: 134, max: 200 },
-                { key: '人质安全', value: 134, max: 200 },
-                { key: '人质安全', value: 134, max: 200 },
-                { key: '人质安全', value: 134, max: 200 }
             ]
         },
     ]
@@ -131,10 +119,10 @@ function renderProgressBar(data) {
     function render(reviewdata) {
         var tpl = reviewdata.map((item, index) => {
             return '<div class="play_data_item">' +
-                '<div>' + item.title + '</div>' +
+                '<div class="play_data_title blod">' + item.title + '</div>' +
                 '<div class="progress_box progress_box_' + index + '">' + renderProgress(item.data) + '</div>'
         })
-        $('.play_data').html(tpl);
+        $('.play_data').append(tpl);
     }
 
     function renderProgress(list) {
@@ -145,7 +133,7 @@ function renderProgressBar(data) {
     }
 
     function renderItem(item) {
-        return '<div class="progress-bar">' +
+        return '<div class="progress-bar blod">' +
             '<div class="progress-bar-title flex">' +
             '<span>' + item.key + '</span>' +
             '<span class="timer count-title" id="count-number" data-to="' + item.value + '" data-speed="800"></span>' +
