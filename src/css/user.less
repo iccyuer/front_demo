@@ -1,12 +1,147 @@
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}
+.flex{
+    display: flex;
+    align-items: center;
+}
+.flex-shrink-0{
+    flex-shrink: 0;
+}
+.flex-grow-1{
+    flex-grow: 1;
+}
+.flex-align-items-start{
+    align-items: flex-start;
+}
+.flex-justify-content-space-around{
+    justify-content: space-around;
+}
+.flex-justify-content-space-between{
+    justify-content: space-between;
+}
+.blod{
+    font-weight: bold;
+}
+
+.inset-border{
+    position: relative;
+    border: 1px solid #5376F9;
+    box-shadow: 0 0 20px 0 #5376F9 inset;
+}
+
+.arrow{
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: url(../images/arrow.png) 100% 100%;
+}
+.arrow-1{
+    left: 2px;
+    top: 2px;
+}
+.arrow-2{
+    right: 2px;
+    top: 2px;
+    transform: rotate(90deg);
+}
+.arrow-3{
+    right: 2px;
+    bottom: 2px;
+    transform: rotate(180deg);
+}
+.arrow-4{
+    left: 2px;
+    bottom: 2px;
+    transform: rotate(270deg);
+}
+
+.border{
+    position: absolute;
+}
+.border-1{
+    width: 80px;
+    height: 60px;
+    left: -4px;
+    top: -4px;
+    background: url(../images/border_1.png) 100% 100%;
+}
+.border-2{
+    width: 80px;
+    height: 60px;
+    right: -4px;
+    top: -4px;
+    background: url(../images/border_2.png) 100% 100%;
+}
+.border-3{
+    width: 120px;
+    height: 100px;
+    right: -4px;
+    bottom: -4px;
+    background: url(../images/border_3.png) 100% 100%;
+}
+.border-4{
+    width: 80px;
+    height: 60px;
+    left: -4px;
+    bottom: -4px;
+    background: url(../images/border_4.png) 100% 100%;
+}
+
 body{
     background-color: #010629;
     width: 1920px;
     height: 1080px;
     margin: auto;
+    color: #23CEFD;
+    font-size: 14px;
 
     .head{
         width: 1920px;
         height: 60px;
-        background: url(../images/head.png) 100% 100%;
+        background: url(../images/head.png) no-repeat 100% 100%;
+        background-position: center bottom;
+        text-align: center;
+
+        img{
+            width: 96px;
+            height: 24px;
+            margin-top: 20px;
+        }
+    }
+
+    .form{
+        width: 1858px;
+        height: 72px;
+        margin: 20px auto;
+    }
+
+    form{
+        label{
+            min-width: 100px;
+            padding: 0 30px;
+        }
+
+        .form-select,.form-control{
+            width: 400px;
+            height: 40px;
+            background-color: transparent;
+            color: #678EBF;
+        }
+        .form-select,.form-control:focus{
+            background-color: transparent;
+            outline: none;
+            border: 1px solid #5376F9;
+            box-shadow: 0 0 20px 0 #5376F9 inset;
+            color: #678EBF;
+        }
+        .form-select,.form-control:active{
+            background-color: transparent;
+            outline: none;
+            border: 1px solid #5376F9;
+            box-shadow: 0 0 20px 0 #5376F9 inset;
+            color: #678EBF;
+        }
     }
 }

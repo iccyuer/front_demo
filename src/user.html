@@ -12,7 +12,41 @@
 </head>
 
 <body>
-    <div class="head"></div>
+    <div class="head">
+        <img src="./images/review.png" alt="">
+    </div>
+    <div class="form inset-border flex">
+        <div class="arrow arrow-1"></div>
+        <div class="arrow arrow-2"></div>
+        <div class="arrow arrow-3"></div>
+        <div class="arrow arrow-4"></div>
+        <div class="form-item">
+            <div class="label"></div>
+            <div class=""></div>
+        </div>
+        <form class="row gx-3 gy-2 align-items-center">
+            <div class="col-auto flex">
+                <label class="" for="specificSizeInputName">姓名</label>
+                <input type="text" class="form-control inset-border" id="specificSizeInputName" placeholder="请输入姓名" autocomplete="off">
+            </div>
+            <div class="col-auto flex">
+                <label class="" for="specificSizeSelect">标签</label>
+                <select class="form-select" id="specificSizeSelect">
+                    <option selected>请选择标签</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">查询</button>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary">新增</button>
+            </div>
+        </form>
+    </div>
+
 </body>
 
 </html>
