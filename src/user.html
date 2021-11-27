@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./css/user.css">
     <script src="./js/jquery.min.js"></script>
     <script src="./js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="./js/bootstrap-paginator.min.js"></script> -->
 </head>
 
 <body>
@@ -40,10 +41,12 @@
                 </select>
             </div>
             <div class="col-auto">
-                <button type="button" class="btn btn-primary form-search-btn" data-bs-toggle="modal" data-bs-target="#exampleModal2">查询</button>
+                <button type="button" class="btn btn-primary form-search-btn" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal2">查询</button>
             </div>
             <div class="col-auto">
-                <button type="button" class="btn btn-primary form-add-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">新增</button>
+                <button type="button" class="btn btn-primary form-add-btn" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">新增</button>
             </div>
         </form>
     </div>
@@ -78,6 +81,7 @@
             </tbody>
         </table>
 
+        <div class="tablecontent"></div>
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <li class="page-item">
@@ -167,9 +171,6 @@
             </div>
         </div>
     </div>
-
-
-
     <script>
 
         let modalel = document.getElementById('exampleModal');
@@ -189,11 +190,68 @@
 
         $()
     </script>
-
-
-
     <script>
-        $.get('http://localhost:8099/record/historyRecord')
+        // $.get('http://localhost:8099/record/historyRecord')
+        function getdata(page = 1, size = 2) {
+            let list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+            return {
+                count: Math.ceil(list.length / size),
+                rows: list.slice((page - 1) * size, page * size)
+            }
+        }
+
+        renderPagination(1, 5)
+
+        function renderPagination(currentPage, totalPage) {
+            var tpl = ''
+            for (let i = 0; i < totalPage; i++) {
+                tpl += `<li class="page-item ${currentPage == i + 1 ? 'active' : ''}"><a class="page-link" href="javascript:;" index=${i + 1} >${i + 1}</a></li>`
+            }
+            $('.pagination').html(tpl);
+        }
+
+
+        $('.pagination').on('click', '.page-link', function () {
+            let a = $(this)
+            console.log(a.val())
+            console.log(a.attr('index'))
+
+            let { rows, count } = getdata(a.attr('index'), 2)
+            $('.tablecontent').html(rows)
+            renderPagination(a.attr('index'), count)
+        })
+
+
+
+        // let currentPage = 1;
+        // let pageSize = 2;
+
+
+        // function render() {
+        //     let { rows, count } = getdata(currentPage,pageSize)
+        //     setPage(currentPage, count, render)
+        // }
+
+        // render()
+
+        // function setPage(pageCurrent, pageSum, callback) {
+        //     $(".pagination").bootstrapPaginator({
+        //         //设置版本号
+        //         bootstrapMajorVersion: 5,
+        //         // 显示第几页
+        //         currentPage: pageCurrent,
+        //         // 总页数
+        //         totalPages: pageSum,
+        //         //当单击操作按钮的时候, 执行该函数, 调用ajax渲染页面
+        //         onPageClicked: function (event,originalEvent,type,page) {
+        //             // 把当前点击的页码赋值给currentPage, 调用ajax,渲染页面
+        //             currentPage = page
+        //             callback && callback()
+        //         }
+        //     })
+        // }
+
+
     </script>
 </body>
 
