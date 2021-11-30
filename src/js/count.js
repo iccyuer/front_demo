@@ -58,17 +58,17 @@ function formatter(b, a) {
     return b.toFixed(0)
     // return b
 }
-$("#count-number").data("countToOptions", {
-    formatter: function (b, a) {
-        // return b.toFixed(2).replace(/\B(?=(?:\d{3})+(?!\d))/g, ",")
-        return b.toFixed(0)
-    }
-});
-$(".timer").each(count);
-function count(a) {
-    var b = $(this);
-    a = $.extend({},
-        a || {},
-        b.data("countToOptions") || {});
-    b.countTo(a)
-};
+// $("#count-number").data("countToOptions", {
+//     formatter: function (b, a) {
+//         // return b.toFixed(2).replace(/\B(?=(?:\d{3})+(?!\d))/g, ",")
+//         return b.toFixed(0)
+//     }
+// });
+// $(".timer").each(count);
+// function count(a) {
+//     var b = $(this);
+//     a = $.extend({},
+//         a || {},
+//         b.data("countToOptions") || {});
+//     b.countTo(a)
+// };

@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="./css/review.css">
     <script src="./js/echarts.min.js"></script>
     <script src="./js/jquery.min.js"></script>
+    <script src="./js/getQuery.js"></script>
+    <script src="./js/count.js"></script>
 </head>
 <body>
     <div class="head">
@@ -24,31 +26,31 @@
                 <div class="name blod">场次信息</div>
             </div>
             <div class="record-info-list">
-                <div class="record-info-item flex">
+                <div class="record-info-item flex train_no">
                     <div class="label blod">训练编号</div>
                     <div class="content">32</div>
                 </div>
-                <div class="record-info-item flex">
+                <div class="record-info-item flex train_type">
                     <div class="label blod">场次类型</div>
                     <div class="content">32</div>
                 </div>
-                <div class="record-info-item flex">
+                <div class="record-info-item flex map_name">
                     <div class="label blod">地图名称</div>
                     <div class="content">323</div>
                 </div>
-                <div class="record-info-item flex">
+                <div class="record-info-item flex train_num">
                     <div class="label blod">训练人数</div>
                     <div class="content"></div>
                 </div>
-                <div class="record-info-item flex">
+                <div class="record-info-item flex train_hours">
                     <div class="label blod">训练时长</div>
                     <div class="content"></div>
                 </div>
-                <div class="record-info-item flex">
+                <div class="record-info-item flex start_time">
                     <div class="label blod">开始时间</div>
                     <div class="content"></div>
                 </div>
-                <div class="record-info-item flex">
+                <div class="record-info-item flex end_time">
                     <div class="label blod">结束时间</div>
                     <div class="content"></div>
                 </div>
@@ -60,7 +62,7 @@
                 <div class="personal">个人</div>
             </div>
             <div class="play_detail">
-                <div class="play-item flex">
+                <!-- <div class="play-item flex">
                     <div class="general inset-border">
                         <div class="border border-1"></div>
                         <div class="border border-2"></div>
@@ -79,9 +81,7 @@
                                 <div>综合得分</div>
                             </div>
                         </div>
-                        <div class="play_chart play_1">
-    
-                        </div>
+                        <div class="play_chart play_1"></div>
                     </div>
                     <div class="play_data flex flex-grow inset-border flex-justify-content-space-around">
                         <div class="border border-1"></div>
@@ -89,42 +89,235 @@
                         <div class="border border-3"></div>
                         <div class="border border-4"></div>
                     </div>
-                </div>
-                <div class="play-item flex">
-                    <div class="general inset-border">
-                        <div class="border border-1"></div>
-                        <div class="border border-2"></div>
-                        <div class="border border-3"></div>
-                        <div class="border border-4"></div>
-                        <div class="player_role flex flex-justify-content-space-between">
-                            <div class="flex">
-                                <img src="./images/headimg.png" alt="" class="headimg">
-                                <div>
-                                    <img src="./images/index.png" alt="" class="index">
-                                    <div class="name">张三</div>
-                                </div>
-                            </div>
-                            <div class="comprehensive_score">
-                                <div class="score">99999</div>
-                                <div>综合得分</div>
-                            </div>
-                        </div>
-                        <div class="play_chart play_1">
-    
-                        </div>
-                    </div>
-                    <div class="play_data flex flex-grow inset-border flex-justify-content-space-around">
-                        <div class="border border-1"></div>
-                        <div class="border border-2"></div>
-                        <div class="border border-3"></div>
-                        <div class="border border-4"></div>
-                    </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
 </body>
 
-<script src="./js/review.js"></script>
-<script src="./js/count.js"></script>
+<script>
+    $(function(){
+        $('.button_title').on('click', '.team',function(){
+            getRecordDetail(1);
+        });
+        $('.button_title').on('click', '.personal',function(){
+            getRecordDetail(2);
+        });
+
+        function getRecordDetail(record_type = 2) {
+            var train_no = getQueryValue('train_no');
+            // record_type	int	是	1：团队，2：个人（默认团队
+            $.get(`/record/recordDetail?train_no=${train_no}&record_type=${record_type}`, function(res){
+                if (res.code == 0) {
+                    let { result } = res;
+                    // 场次信息
+                    $('.record-info-list .train_no .content').html(result.train_no);
+                    $('.record-info-list .train_type .content').html(result.train_type);
+                    $('.record-info-list .map_name .content').html(result.map_name);
+                    $('.record-info-list .train_num .content').html(result.train_num);
+                    $('.record-info-list .train_hours .content').html(result.train_hours);
+                    $('.record-info-list .start_time .content').html(result.start_time);
+                    $('.record-info-list .end_time .content').html(result.end_time);
+    
+                    // detail
+                    let { list } = result;
+                    if (!!list && Array.isArray(list)) {
+                        var tpl = list.map(item => {
+                            return `<div class="play-item flex">
+                                <div class="general inset-border">
+                                    <div class="border border-1"></div>
+                                    <div class="border border-2"></div>
+                                    <div class="border border-3"></div>
+                                    <div class="border border-4"></div>
+                                    <div class="player_role flex flex-justify-content-space-between">
+                                        ${record_type==2?`<div class="flex">
+                                            <img src="http://vr.dwtv.tv${item.pic}" alt="" class="headimg">
+                                            <div>
+                                                <img src="./images/index.png" alt="" class="index">
+                                                <div class="name">${item.user_name}</div>
+                                            </div>
+                                        </div>`:`<div class="flex">
+                                            <img src="./images/headimg.png" alt="" class="headimg">
+                                            <div>
+                                                <img src="./images/index.png" alt="" class="index">
+                                                <div class="name">${item.team_name}</div>
+                                            </div>
+                                        </div>`}
+                                        
+                                        <div class="comprehensive_score">
+                                            <div class="score timer count-title" id="count-number" data-to="${item.total_score}" data-speed="800"></div>
+                                            <div>综合得分</div>
+                                        </div>
+                                    </div>
+                                    <div class="play_chart play_1"></div>
+                                </div>
+                                <div class="play_data flex flex-grow inset-border flex-justify-content-space-around">
+                                    <div class="border border-1"></div>
+                                    <div class="border border-2"></div>
+                                    <div class="border border-3"></div>
+                                    <div class="border border-4"></div>
+                                </div>
+                            </div>`
+                        }).join('')
+                        $('.play_detail').html(tpl);
+
+                        // 各项
+                        // let mapping = {
+                        //     bt_hostage_safe: '人质安全',
+                        //     bt_robber_deal: '劫匪处置',
+                        //     bt_area_search: '区域搜索',
+                        //     bt_key_check: '关键点检查',
+                        //     bt_procedural_foul: '程序性犯规',
+                        //     bt_completion_time: '完成时间',
+                        //     ss_Illegal_shoot: '非法射击',
+                        //     ss_fire_first: '先敌开火',
+                        //     ss_reaction_time: '反应时间',
+                        //     ss_empty_shoot: '空枪射击',
+                        //     ss_bullet_change_time: '空枪换弹时间',
+                        //     ts_dangerous_into: '危险闯入',
+                        //     ts_gun_head_separation: '枪头分离',
+                        //     ts_tactics_change_clip: '战术换弹夹',
+                        //     ts_quick_peep: '速窥',
+                        //     ts_quick_peep_shoot: '速窥射击',
+                        //     ts_change_posture_shoot: '高低换姿射击'
+                        // }
+                        var reviewdata = [
+                            {
+                                title: '基础任务',
+                                data: [
+                                    { field: 'bt_hostage_safe', key: '人质安全' },
+                                    { field: 'bt_robber_deal', key: '劫匪处置' },
+                                    { field: 'bt_area_search', key: '区域搜索' },
+                                    { field: 'bt_key_check', key: '关键点检查' },
+                                    { field: 'bt_procedural_foul', key: '程序性犯规' },
+                                    { field: 'bt_completion_time', key: '完成时间' }
+                                ]
+                            },
+                            {
+                                title: '射击技巧',
+                                data: [
+                                    { field: 'ss_Illegal_shoot', key: '非法射击' },
+                                    { field: 'ss_fire_first', key: '先敌开火' },
+                                    { field: 'ss_reaction_time', key: '反应时间' },
+                                    { field: 'ss_empty_shoot', key: '空枪射击' },
+                                    { field: 'ss_bullet_change_time', key: '空枪换弹时间' }
+                                ]
+                            },
+                            {
+                                title: '战术技术',
+                                data: [
+                                    { field: 'ts_dangerous_into', key: '危险闯入' },
+                                    { field: 'ts_gun_head_separation', key: '枪头分离' },
+                                    { field: 'ts_tactics_change_clip', key: '战术换弹夹' },
+                                    { field: 'ts_quick_peep', key: '速窥' },
+                                    { field: 'ts_quick_peep_shoot', key: '速窥射击' },
+                                    { field: 'ts_change_posture_shoot', key: '高低换姿射击' }
+                                ]
+                            },
+                        ]
+                        
+                        var tpl = list.map(item => {
+                            reviewdata.map(it => {
+                                it.data.map(i => {
+                                    try {
+                                        if (item[i.field]) {
+                                            let value = item[i.field].split('/');
+                                            if (value.length == 2) {
+                                                i.value = value[0];
+                                                i.max = value[1];
+                                                i.status = 1;
+                                            } else {
+                                                i.status = 0;
+                                            }
+                                        } else {
+                                            i.status = 0;
+                                        }
+                                    } catch(err) {
+                                        console.log('err',err)
+                                        i.status = 0;
+                                    }
+                                })
+                            })
+                        })
+
+
+                        function render(reviewdata) {
+                            var tpl = reviewdata.map((item, index) => {
+                                return '<div class="play_data_item">' +
+                                    '<div class="play_data_title blod">' + item.title + '</div>' +
+                                    '<div class="progress_box progress_box_' + index + '">' + renderProgress(item.data) + '</div>'
+                            })
+                            $('.play_data').append(tpl);
+                        }
+
+                        function renderProgress(list) {
+                            var tpl = list.map(item => {
+                                return renderItem(item)
+                            }).join('')
+                            return tpl;
+                        }
+
+                        function renderItem(item) {
+                            if (item.status) {
+                                return '<div class="progress-bar blod">' +
+                                    '<div class="progress-bar-title flex">' +
+                                    '<span>' + item.key + '</span>' +
+                                    '<span class="timer count-title" id="count-number" data-to="' + item.value + '" data-speed="800"></span>' +
+                                    '</div>' +
+                                    '<div class="progress-bar-body">' +
+                                    '<div class="back" value="' + item.max + '"></div>' +
+                                    '<div class="frot" value="' + item.value + '"></div>' +
+                                    '</div>' +
+                                    '</div>'
+                            } else {
+                                return ''
+                            }
+                        }
+
+
+                        function runAnimation() {
+                            // 进度条
+                            $('.play_data  .progress-bar').each(bar)
+                            function bar() {
+                                var b = $(this);
+                                var max = b.find('.back').attr('value');
+                                var value = b.find('.frot').attr('value');
+                                // console.log(max, value)
+                                b.find('.frot').css("width", parseInt(value / max * 180) + "px");
+                            }
+
+                            // 
+                            $("#count-number").data("countToOptions", {
+                                formatter: function (b, a) {
+                                    // return b.toFixed(2).replace(/\B(?=(?:\d{3})+(?!\d))/g, ",")
+                                    return b.toFixed(0)
+                                }
+                            });
+                            $(".timer").each(count);
+                            function count(a) {
+                                var b = $(this);
+                                a = $.extend({},
+                                    a || {},
+                                    b.data("countToOptions") || {});
+                                b.countTo(a)
+                            };
+                        }
+
+                        setTimeout(() => {
+                            runAnimation();
+                        }, 0)
+
+                        console.log('reviewdata', reviewdata)
+                        render(reviewdata);
+
+                    }
+                }
+            },'json')
+        }
+        getRecordDetail()
+    })
+</script>
+
+<!-- <script src="./js/review.js"></script> -->
+
 </html>
