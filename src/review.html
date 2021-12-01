@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,6 +12,7 @@
     <script src="./js/getQuery.js"></script>
     <script src="./js/count.js"></script>
 </head>
+
 <body>
     <div class="head">
         <img src="./images/review.png" alt="">
@@ -61,53 +63,24 @@
                 <div class="team">团队</div>
                 <div class="personal">个人</div>
             </div>
-            <div class="play_detail">
-                <!-- <div class="play-item flex">
-                    <div class="general inset-border">
-                        <div class="border border-1"></div>
-                        <div class="border border-2"></div>
-                        <div class="border border-3"></div>
-                        <div class="border border-4"></div>
-                        <div class="player_role flex flex-justify-content-space-between">
-                            <div class="flex">
-                                <img src="./images/headimg.png" alt="" class="headimg">
-                                <div>
-                                    <img src="./images/index.png" alt="" class="index">
-                                    <div class="name">张三</div>
-                                </div>
-                            </div>
-                            <div class="comprehensive_score">
-                                <div class="score">99999</div>
-                                <div>综合得分</div>
-                            </div>
-                        </div>
-                        <div class="play_chart play_1"></div>
-                    </div>
-                    <div class="play_data flex flex-grow inset-border flex-justify-content-space-around">
-                        <div class="border border-1"></div>
-                        <div class="border border-2"></div>
-                        <div class="border border-3"></div>
-                        <div class="border border-4"></div>
-                    </div>
-                </div> -->
-            </div>
+            <div class="play_detail"></div>
         </div>
     </div>
 </body>
 
 <script>
-    $(function(){
-        $('.button_title').on('click', '.team',function(){
+    $(function () {
+        $('.button_title').on('click', '.team', function () {
             getRecordDetail(1);
         });
-        $('.button_title').on('click', '.personal',function(){
+        $('.button_title').on('click', '.personal', function () {
             getRecordDetail(2);
         });
 
         function getRecordDetail(record_type = 2) {
             var train_no = getQueryValue('train_no');
             // record_type	int	是	1：团队，2：个人（默认团队
-            $.get(`/record/recordDetail?train_no=${train_no}&record_type=${record_type}`, function(res){
+            $.get(`/record/recordDetail?train_no=${train_no}&record_type=${record_type}`, function (res) {
                 if (res.code == 0) {
                     let { result } = res;
                     // 场次信息
@@ -118,11 +91,11 @@
                     $('.record-info-list .train_hours .content').html(result.train_hours);
                     $('.record-info-list .start_time .content').html(result.start_time);
                     $('.record-info-list .end_time .content').html(result.end_time);
-    
+
                     // detail
                     let { list } = result;
                     if (!!list && Array.isArray(list)) {
-                        var tpl = list.map(item => {
+                        var tpl = list.map((item, index) => {
                             return `<div class="play-item flex">
                                 <div class="general inset-border">
                                     <div class="border border-1"></div>
@@ -130,15 +103,17 @@
                                     <div class="border border-3"></div>
                                     <div class="border border-4"></div>
                                     <div class="player_role flex flex-justify-content-space-between">
-                                        ${record_type==2?`<div class="flex">
+                                        ${record_type == 2 ? `<div class="flex">
                                             <img src="http://vr.dwtv.tv${item.pic}" alt="" class="headimg">
-                                            <div>
+                                            <div class="role-name">
+                                                <div class="role-index">0${index+1}</div> 
                                                 <img src="./images/index.png" alt="" class="index">
                                                 <div class="name">${item.user_name}</div>
                                             </div>
-                                        </div>`:`<div class="flex">
+                                        </div>`: `<div class="flex">
                                             <img src="./images/headimg.png" alt="" class="headimg">
-                                            <div>
+                                            <div class="role-name">
+                                                <div class="role-index">0${index+1}</div> 
                                                 <img src="./images/index.png" alt="" class="index">
                                                 <div class="name">${item.team_name}</div>
                                             </div>
@@ -149,7 +124,7 @@
                                             <div>综合得分</div>
                                         </div>
                                     </div>
-                                    <div class="play_chart play_1"></div>
+                                    <div class="play_chart play_chart_${index}"></div>
                                 </div>
                                 <div class="play_data flex flex-grow inset-border flex-justify-content-space-around">
                                     <div class="border border-1"></div>
@@ -161,26 +136,107 @@
                         }).join('')
                         $('.play_detail').html(tpl);
 
-                        // 各项
-                        // let mapping = {
-                        //     bt_hostage_safe: '人质安全',
-                        //     bt_robber_deal: '劫匪处置',
-                        //     bt_area_search: '区域搜索',
-                        //     bt_key_check: '关键点检查',
-                        //     bt_procedural_foul: '程序性犯规',
-                        //     bt_completion_time: '完成时间',
-                        //     ss_Illegal_shoot: '非法射击',
-                        //     ss_fire_first: '先敌开火',
-                        //     ss_reaction_time: '反应时间',
-                        //     ss_empty_shoot: '空枪射击',
-                        //     ss_bullet_change_time: '空枪换弹时间',
-                        //     ts_dangerous_into: '危险闯入',
-                        //     ts_gun_head_separation: '枪头分离',
-                        //     ts_tactics_change_clip: '战术换弹夹',
-                        //     ts_quick_peep: '速窥',
-                        //     ts_quick_peep_shoot: '速窥射击',
-                        //     ts_change_posture_shoot: '高低换姿射击'
-                        // }
+
+                        function renderChart(dom, data, indicator) {
+                            if (!dom) return;
+                            var myChart = echarts.init(dom);
+                            var option;
+                            const lineStyle = {
+                                width: 1,
+                                opacity: 0.5
+                            };
+                            option = {
+                                backgroundColor: 'transparent',
+                                title: {
+                                    text: 'AQI - Radar',
+                                    left: 'center',
+                                    textStyle: {
+                                        color: '#eee'
+                                    }
+                                },
+                                legend: {
+                                    bottom: 5,
+                                    data: ['Beijing', 'Shanghai', 'Guangzhou'],
+                                    itemGap: 20,
+                                    textStyle: {
+                                        color: '#fff',
+                                        fontSize: 14
+                                    },
+                                    selectedMode: 'single'
+                                },
+                                radar: {
+                                    // indicator: [
+                                    //     { name: '基础任务', max: 100 },
+                                    //     { name: '射击技巧', max: 70 },
+                                    //     { name: '战术技术', max: 150 },
+                                    // ],
+                                    indicator,
+                                    shape: 'circle',
+                                    splitNumber: 5,
+                                    axisName: {
+                                        color: 'rgb(50, 209, 253)'
+                                    },
+                                    splitLine: {
+                                        lineStyle: {
+                                            color: [
+                                                'rgba(50, 209, 253, 1)',
+                                                'rgba(50, 209, 253, 0.2)',
+                                                'rgba(50, 209, 253, 0.4)',
+                                                'rgba(50, 209, 253, 0.6)',
+                                                'rgba(50, 209, 253, 0.8)',
+                                                'rgba(50, 209, 253, 1)'
+                                            ].reverse()
+                                        }
+                                    },
+                                    splitArea: {
+                                        show: false
+                                    },
+                                    axisLine: {
+                                        lineStyle: {
+                                            color: 'rgba(50, 209, 253, 0.5)'
+                                        }
+                                    }
+                                },
+                                series: [
+                                    {
+                                        name: 'Beijing',
+                                        type: 'radar',
+                                        lineStyle: lineStyle,
+                                        data: data,
+                                        symbol: 'none',
+                                        itemStyle: {
+                                            color: '#23CEFD'
+                                        },
+                                        areaStyle: {
+                                            opacity: 1
+                                        }
+                                    }
+                                ]
+                            };
+                            option && myChart.setOption(option);
+                        }
+                        
+                        let baseIndicator = [
+                            { field: 'basic_task_score', name: '基础任务' },
+                            { field: 'shoot_skill_score', name: '射击技巧' },
+                            { field: 'tactics_skill_score', name: '战术技术' }
+                        ]
+                        list.map((item, index) => {
+                            let indicator = []
+                            let data = [[]]
+                            baseIndicator.map(it => {
+                                try {
+                                    if (item[it.field]) {
+                                        let value = item[it.field].split('/');
+                                        if (value.length == 2) {
+                                            indicator.push({ name: it.name, max: value[1] })
+                                            data[0].push(value[0])
+                                        }
+                                    }
+                                } catch (err) {}
+                            })
+                            renderChart(document.getElementsByClassName('play_chart_'+index)[0], data, indicator);
+                        })
                         var reviewdata = [
                             {
                                 title: '基础任务',
@@ -215,7 +271,7 @@
                                 ]
                             },
                         ]
-                        
+
                         var tpl = list.map(item => {
                             reviewdata.map(it => {
                                 it.data.map(i => {
@@ -232,16 +288,14 @@
                                         } else {
                                             i.status = 0;
                                         }
-                                    } catch(err) {
-                                        console.log('err',err)
+                                    } catch (err) {
                                         i.status = 0;
                                     }
                                 })
                             })
                         })
 
-
-                        function render(reviewdata) {
+                        function renderReviewData(reviewdata) {
                             var tpl = reviewdata.map((item, index) => {
                                 return '<div class="play_data_item">' +
                                     '<div class="play_data_title blod">' + item.title + '</div>' +
@@ -282,11 +336,10 @@
                                 var b = $(this);
                                 var max = b.find('.back').attr('value');
                                 var value = b.find('.frot').attr('value');
-                                // console.log(max, value)
                                 b.find('.frot').css("width", parseInt(value / max * 180) + "px");
                             }
 
-                            // 
+                            // count
                             $("#count-number").data("countToOptions", {
                                 formatter: function (b, a) {
                                     // return b.toFixed(2).replace(/\B(?=(?:\d{3})+(?!\d))/g, ",")
@@ -302,22 +355,16 @@
                                 b.countTo(a)
                             };
                         }
+                        renderReviewData(reviewdata);
 
                         setTimeout(() => {
                             runAnimation();
                         }, 0)
-
-                        console.log('reviewdata', reviewdata)
-                        render(reviewdata);
-
                     }
                 }
-            },'json')
+            }, 'json')
         }
         getRecordDetail()
     })
 </script>
-
-<!-- <script src="./js/review.js"></script> -->
-
 </html>

@@ -209,7 +209,6 @@ body{
             width: 100%;
         }
         .pagination{
-
             text-align: center;
             background: transparent;
             color: #9ECAFF;
@@ -242,6 +241,15 @@ body{
             right: -35px;
             top: -38px;
             cursor: pointer;
+        }
+
+        .modal-header{
+            border: 1px solid #5376F9;
+            
+            .modal-title{
+                width: 100%;
+                text-align: center;
+            }
         }
 
 
@@ -323,7 +331,12 @@ body{
         }
     }
 
-    .modal-table{ 
+    .modal-table{
+        .modal-content{
+            position: relative;
+            padding-bottom: 50px;
+        }
+
         .table{
             color: #5CCBFA;
             border-color: #5376F9;
@@ -333,7 +346,7 @@ body{
                 text-indent: 2em;
             }
 
-            .info-btn{
+            .review-btn{
                 width: 119px;
                 height: 30px;
                 background: linear-gradient(90deg, #2D88FB 0%, #41B0DC 100%);
@@ -342,6 +355,31 @@ body{
                 outline: none;
                 color: white;
                 line-height: 30px;
+            }
+        }
+
+        nav{
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+        }
+
+        .pagination-modal{
+            text-align: center;
+            background: transparent;
+            color: #9ECAFF;
+
+            .active{
+                .page-link{
+                    background: #9ECAFF;
+                    color: white;
+                }
+            }
+
+            .page-link{
+                border: 1px solid #9ECAFF;
+                color: #9ECAFF;
+                background: transparent;
             }
         }
     }

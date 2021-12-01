@@ -9,12 +9,11 @@
     <link rel="stylesheet" href="./css/user.css">
     <script src="./js/jquery.min.js"></script>
     <script src="./js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="./js/bootstrap-paginator.min.js"></script> -->
 </head>
 
 <body>
     <div class="head">
-        <img src="./images/review.png" alt="">
+        <img src="./images/user.png" alt="">
     </div>
     <div class="form inset-border flex">
         <div class="arrow arrow-1"></div>
@@ -66,8 +65,8 @@
         </table>
         <div class="tablecontent"></div>
         <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <li class="page-item">
+            <ul class="pagination pagination-body justify-content-center">
+                <!-- <li class="page-item">
                     <a class="page-link" href="#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
@@ -79,7 +78,7 @@
                     <a class="page-link" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
-                </li>
+                </li> -->
             </ul>
         </nav>
     </div>
@@ -167,19 +166,13 @@
                                 <th scope="col">操作</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>123213</td>
-                                <td>居民楼搜索射击</td>
-                                <td>2021-04-22 12:00:00</td>
-                                <td>232321</td>
-                                <td class="flex flex-justify-content-space-around">
-                                    <button class="info-btn">查看详细数据</button>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination pagination-modal justify-content-center">
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -222,7 +215,6 @@
             function getDepartment() {
                 $.get('/user/getDepartment', function(res) {
                     if (res.code == 0) {
-                        console.log(res.result)
                         if (Array.isArray(res.result)) {
                             var tpl = res.result.map(department => {
                                 return `<option value="${department.department_name}">${department.department_name}</option>`
@@ -237,7 +229,6 @@
                             $('.form-select-department-modal').html(tpl2);
                         }
                     } else {
-                        // console.error(res.msg)
                         $('.toast-body').html('res.msg');
                         toast.show()
                     }
@@ -250,9 +241,7 @@
             let size = 10;
             function getUserList() {
                 let user_name = $('.form-user-name').val();
-                console.log('user_name', user_name);
                 let department_name = $('.form-select-department').val();
-                console.log('department_name', department_name);
                 var data = {
                     page: page,
                     size: size
@@ -260,9 +249,7 @@
                 if (!!user_name) data.user_name = user_name;
                 if (!!department_name && department_name!='请选择部门') data.department_name = department_name;
                 $.get('/user/searchUser', data, function(res) {
-                    console.log('res', res)
                     if (res.code == 0) {
-                        console.log(res.result)
                         let { count, list } = res.result;
                         if (count && Number.isInteger) {
                             renderPagination(page, Math.ceil(count/size))
@@ -281,6 +268,7 @@
                                     </td>
                                 </tr>`
                             }).join('')
+                            tpl = tpl?tpl:'<tr><td colspan="6">暂无数据</td></tr>'
                             $('.table-body tbody').html(tpl)
                         }
                     } else {
@@ -307,9 +295,9 @@
                 for (let i = 0; i < totalPage; i++) {
                     tpl += `<li class="page-item ${currentPage == i + 1 ? 'active' : ''}"><a class="page-link" href="javascript:;" index=${i + 1} >${i + 1}</a></li>`
                 }
-                $('.pagination').html(tpl);
+                $('.pagination-body ').html(tpl);
             }
-            $('.pagination').on('click', '.page-link', function () {
+            $('.pagination-body ').on('click', '.page-link', function () {
                 let clickpage = $(this);
                 page = clickpage.attr('index');
                 getUserList();
@@ -448,14 +436,28 @@
                 getUserList();
             })
 
+            let modal_user_id;
             // 查看历史战绩
             $('.table-body').on('click', '.history-btn', function(){
-                let user_id = $(this).attr('user-id');
-                console.log(user_id);
-                $.get(`/record/historyRecord?user_id=${user_id}`, function(res) {
-                    console.log('res', res)
+                modal_user_id = $(this).attr('user-id');
+                getHistoryRecord();
+            });
+            
+            let page_modal = 1;
+            let size_modal = 10;
+            function getHistoryRecord() {
+                if (!modal_user_id) return;
+                var data = {
+                    page: page_modal,
+                    size: size_modal,
+                    user_id: modal_user_id
+                }
+                $.get(`/record/historyRecord`, data, function(res) {
                     if (res.code == 0) {
                         let { count,list } = res.result;
+                        if (count && Number.isInteger) {
+                            renderPaginationModal(page_modal, Math.ceil(count/size_modal))
+                        }
                         if (list && Array.isArray(list)) {
                             var tpl = list.map(item => {
                                 return `<tr>
@@ -468,18 +470,32 @@
                                     </td>
                                 </tr>`
                             }).join('')
+                            tpl = tpl?tpl:'<tr><td colspan="6">暂无数据</td></tr>'
                             $('.modal-body tbody').html(tpl)
                             modal3.show();
                         }
                     }
                 },'json');
-            });
+            }
+
+
+            function renderPaginationModal(currentPage, totalPage) {
+                var tpl = ''
+                for (let i = 0; i < totalPage; i++) {
+                    tpl += `<li class="page-item ${currentPage == i + 1 ? 'active' : ''}"><a class="page-link" href="javascript:;" index=${i + 1} >${i + 1}</a></li>`
+                }
+                $('.pagination-modal').html(tpl);
+            }
+            $('.pagination-modal').on('click', '.page-link', function () {
+                let clickpage = $(this);
+                page_modal = clickpage.attr('index');
+                getHistoryRecord();
+            })
+            
             // 修改个人信息
             $('.table-body').on('click', '.info-btn', function(){
                 let user_id = $(this).attr('user-id');
-                console.log(user_id);
                 $.get(`/user/getUserInfo?user_id=${user_id}`, function(res) {
-                    console.log('res', res)
                     if (res.code == 0) {
                         let { result } = res;
                         $('.form-user-name-modal').val(result.user_name);
@@ -503,8 +519,4 @@
         })
     </script>
 </body>
-
-
-
-
 </html>
