@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>file</title>
+</head>
+
+<body>
+    <h2>file</h2>
+    <div>
+        <input id="upload" type="file" />
+        <img id="preview" src="" alt="预览" />
+    </div>
+
+</body>
+<script>
+    const upload = document.querySelector("#upload");
+    const preview = document.querySelector("#preview");
+
+    upload.onchange = function () {
+        const file = upload.files[0]; //File对象
+        const src = URL.createObjectURL(file); // File对象 -> 指向blob的地址,file文件存在于浏览器的内存中,blob也在浏览器内存中,浏览器关闭则消失
+        preview.src = src;
+    };
+</script>
+
+</html>
