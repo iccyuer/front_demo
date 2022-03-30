@@ -24,7 +24,7 @@
             dataType: "json",
             data: JSON.stringify([{
                 "debug": true,
-                "jsApiList": ["scanQRCode"],
+                "jsApiList": ["scanQRCode", "updateAppMessageShareData", "updateTimelineShareData"],
                 "url": location.href
             }]),
             beforeSend: function (req) {
@@ -51,7 +51,15 @@
                     }
                 });
             };
-
+            wx.updateAppMessageShareData({
+                title: 'la', // 分享标题
+                desc: 'miaosiu', // 分享描述
+                link: 'http://165.154.24.66/', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: 'http://165.154.24.66/images/doge.jpeg', // 分享图标
+                success: function () {
+                    // 设置成功
+                }
+            })
         });
 
         // $.post("http://165.154.24.66:8094/api/wxmainapi/getJsConfig",
