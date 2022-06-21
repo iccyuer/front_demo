@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<title>radial-gradient学习</title>
+
+<body>
+    <div class="box1">
+        background: radial-gradient(circle at center, transparent 0%, transparent 30%, black 30%, black 31%, transparent
+        31%, transparent 100%),
+        radial-gradient(circle at top 0 left 0, transparent 0%, transparent 30%, black 30%, black 31%, transparent 31%,
+        transparent 100%),
+        radial-gradient(circle at top 0 left 100px, transparent 0%, transparent 30%, black 30%, black 31%, transparent
+        31%, transparent 100%);
+    </div>
+</body>
+<style>
+    body {
+        display: flex;
+        flex-direction: row;
+
+        font-weight: bold;
+    }
+
+    div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 500px;
+        height: 500px;
+        margin: 20px;
+        border: 1px solid black;
+    }
+
+    .box1 {
+
+        background: radial-gradient(circle at center, transparent 0%, transparent 30%, black 30%, black 31%, transparent 31%, transparent 100%),
+            radial-gradient(circle at top 0 left 0, transparent 0%, transparent 30%, black 30%, black 31%, transparent 31%, transparent 100%),
+            radial-gradient(circle at top 0 left 100px, transparent 0%, transparent 30%, black 30%, black 31%, transparent 31%, transparent 100%);
+    }
+</style>
+
+</html>
