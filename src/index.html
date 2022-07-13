@@ -37,9 +37,13 @@
 
     $('.openapp').on('click', function(){
         window.location.href = 'hupoart://hupoart.com?a=b';
-        setTimeout(() => {
+        setTimeout(function () {
+            let hidden = window.document.hidden || window.document.mozHidden || window.document.msHidden || window.document.webkitHidden;
+            if (typeof hidden !== "undefined" && hidden === true) {
+                return;
+            }
             window.location.href = 'https://www.hupoart.com/androidapk.html';
-        }, 2000)
+        }, 2000);
     })
 </script>
 
