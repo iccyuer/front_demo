@@ -44,7 +44,7 @@ gulp.task('minify-js', () => {
 });
 
 gulp.task('minify-img', () => {
-    return gulp.src('src/images/*.{jpg,jpeg,png,gif}')
+    return gulp.src('src/images/*.{jpg,jpeg,png,gif,svg}')
         .pipe(imagemin())
         .pipe(gulp.dest('dist/images'));
 });
