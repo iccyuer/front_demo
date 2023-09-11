@@ -38,12 +38,15 @@
 
 
 
-    upload.onchange = function () {
+    upload.onchange = async function () {
         const file = upload.files[0]; //File对象
-        const src = URL.createObjectURL(file); // File对象 -> 指向blob的地址,file文件存在于浏览器的内存中,blob也在浏览器内存中,浏览器关闭则消失
+        // const src = URL.createObjectURL(file); // File对象 -> 指向blob的地址,file文件存在于浏览器的内存中,blob也在浏览器内存中,浏览器关闭则消失
         // console.log(src)
         // console.log(src.type)
-        preview.src = src;
+        // preview.src = src;
+        let a = await readFile(file, 'DataUrl')
+        console.log(a)
+        preview.src = a;
     };
 
     /**
@@ -94,8 +97,6 @@
             // image.crossOrigin = '';
             image.onload = function () {
                 resolve(image)
-                console.log('@@@', image)
-                body.appendChild(image)
             }
             image.error = function (err) {
                 console.log('err', err);
@@ -137,6 +138,34 @@
         // 3.base64 --> blob
         return base642Blob(dataurl);
     }
+
+
+    // FileReader 转成 ArrayBuffer、base64、text  参数可以是file/blob
+    function readFile(file, type) {
+        return new Promise((resolve) => {
+            let reader = new FileReader();
+            reader.onload = (event) => {
+                resolve(event.target.result);
+            };
+            switch (type) {
+                case "ArrayBuffer":
+                    // 生成ArrayBUffer
+                    reader.readAsArrayBuffer(file);
+                    break;
+                case "DataUrl":
+                    // 生成base64
+                    reader.readAsDataURL(file);
+                    break;
+                case "Text":
+                    reader.readAsText(file, "utf-8");
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
+
 
     async function fn() {
         let blob = await imgUrl2Blob("https://img-home.csdnimg.cn/images/20230817060240.png");
