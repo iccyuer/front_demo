@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>file</title>
+    <script src="./js/jquery.min.js"></script>
+</head>
+
+<body>
+    <h2>file</h2>
+    <div>
+        <div class="container"></div>
+        <input id="upload" type="file" />
+        <img id="preview" src="" alt="预览" />
+        <img src="https://img-home.csdnimg.cn/images/20230817060240.png" alt="">
+    </div>
+
+</body>
+<script>
+    const body = document.querySelector("body")
+    const container = document.querySelector(".container")
+    const upload = document.querySelector("#upload");
+    const preview = document.querySelector("#preview");
+
+
+
+    const obj = { hello: "world" };
+    const blob = new Blob(['111', '232'], {
+        type: "text/plain",
+    });
+    // console.log(blob)
+    // console.log(blob.text())
+    // console.log(URL.createObjectURL(blob))
+    container.innerHTML = URL.createObjectURL(blob)
+    preview.src = URL.createObjectURL(blob);
+
+
+
+    upload.onchange = function () {
+        const file = upload.files[0]; //File对象
+        const src = URL.createObjectURL(file); // File对象 -> 指向blob的地址,file文件存在于浏览器的内存中,blob也在浏览器内存中,浏览器关闭则消失
+        // console.log(src)
+        // console.log(src.type)
+        preview.src = src;
+    };
+
+    /**
+        image/jpeg
+        image/png
+        video/mp4
+        audio/mp3
+    */
+
+    // file --> blob URL
+    function file2BlobURL(file) {
+        return URL.createObjectURL(file);
+    }
+
+    // bolo --> blob URL
+    function file2BlobURL(bolo) {
+        return URL.createObjectURL(bolo);
+    }
+
+    // blob --> file
+    function blob2File(blob, fileName) {
+        return new File([blob], fileName, { type: blob.type });
+    }
+
+    // file --> blob
+    function fileToBlob(file) {
+        return new Blob([file], { type: file.type })
+    }
+
+    // url资源 --> blob、file
+    function url2Blob(url, fileName, fileType, cb) {
+        $.ajax({
+            url: url,
+            success: function (result) {
+                const blob = new Blob([result], { type: fileType });
+                cb(blob2File(blob, fileName));
+            }
+        });
+    }
+
+    // img:url --> image实例
+    function getImage(url) {
+        return new Promise(resolve => {
+            let image = new Image();
+            image.src = url;
+            // 源图片允许跨域，否则canvas转base64时，toDataURL会报错
+            image.setAttribute('crossOrigin', 'anonymous');
+            // image.crossOrigin = '';
+            image.onload = function () {
+                resolve(image)
+                console.log('@@@', image)
+                body.appendChild(image)
+            }
+            image.error = function (err) {
+                console.log('err', err);
+            }
+        })
+    }
+
+    // image实例 --> base64
+    function image2Base64(image) {
+        let canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        let ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0, image.width, image.height);
+        let ext = image.src.substring(image.src.lastIndexOf(".") + 1).toLowerCase();
+        let dataURL = canvas.toDataURL("image/" + ext);
+        canvas.remove();
+        return dataURL;
+    }
+
+    // base64 --> blob
+    function base642Blob(dataurl) {
+        let arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]),
+            n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], { type: mime });
+    }
+
+    // img url资源 --> blob
+    async function imgUrl2Blob(url) {
+        // 1.img:url --> image实例
+        let image = await getImage(url);
+        // 2.image实例 --> base64
+        let dataurl = image2Base64(image);
+        // 3.base64 --> blob
+        return base642Blob(dataurl);
+    }
+
+    async function fn() {
+        let blob = await imgUrl2Blob("https://img-home.csdnimg.cn/images/20230817060240.png");
+        console.log('blobblobblob', file2BlobURL(blob));
+    }
+    fn()
+
+    url2Blob(
+        // "http://localhost:8080/images/add.png",
+        "https://img-home.csdnimg.cn/images/20230817060240.png",
+        "add.png",
+        "image/png",
+        (file) => {
+            console.log('file', file)
+        })
+
+</script>
+
+</html>

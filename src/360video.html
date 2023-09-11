@@ -1,0 +1,405 @@
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <title>three.js webgl - equirectangular video panorama</title>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+            <style>
+                body,html{width: 100%;}
+
+                body {background-color: #000000;margin: 0px;overflow: hidden;}
+                #info {position: absolute;top: 0px; width: 100%;color: #ffffff;padding: 5px;font-family:Monospace;font-size:13px;font-weight: bold;text-align:center;}
+                a {color: #ffffff;}
+
+
+                /*控制器*/
+                .controll{width: 900px;padding: 10px;position: absolute;bottom:10px;left:50%;margin-left: -450px;height: 20px;background: rgba(0,0,0,0.8)}
+
+                /*按钮组*/
+                .btns>button{z-index: 100;position:absolute;bottom: 5px;border: 0;background: 0;width: 30px;height: 30px;background-size: 100% 100%;padding: 0}
+
+                /*视频控制条样式*/
+                .coll{position: absolute;bottom: 17px;left: 80px;width: 500px;}
+                .coll span{display: block;height: 4px;width: 100%;margin-left: 2%;background-color: #505050;border-radius: 4px;margin-top: 11px;float:left;}
+                .coll span b:nth-child(1){z-index:1;float:left;position:relative;width: 0%;background-color: #b4b4b4;display: block;height: 100%;border-radius: 4px;}
+                .coll span b:nth-child(2){z-index:2;position:relative;float: left;width: 8px;height: 8px;background-color: white;border-radius: 8px;margin-top: -2px;margin-left: -8px;}
+                .coll span b:nth-child(3){position: relative;background-color: white;display: block;height: 4px;border-radius: 4px;}
+                /*音频控制条样式*/
+                .voicecoll{position: absolute;bottom: 17px;left:680px;width:150px;}
+                .voicecoll span{display: block;height: 4px;width: 100%;margin-left: 2%;background-color: #505050;border-radius: 4px;margin-top: 11px;float:left;}
+                .voicecoll span b:nth-child(1){z-index:1;float:left;position:relative;width: 0%;background-color: #b4b4b4;display: block;height: 100%;border-radius: 4px;}
+                .voicecoll span b:nth-child(2){z-index:2;position:relative;float: left;width: 8px;height: 8px;background-color: white;border-radius: 8px;margin-top: -2px;margin-left: -8px;}
+                .voicecoll span b:nth-child(3){position: relative;background-color: white;display: block;height: 4px;border-radius: 4px;}
+
+
+            </style>
+        </head>
+        <body>
+            <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+            <div id="container">
+                <div class="controll">
+                    <div class="btns">
+                        <!--<button style="right: 20px;" onclick="stop()">
+                            暂停
+                        </button>-->
+                        <button id="video_start_btn" style="left: 30px;background-image: url('img/stop.png')" onclick="start()">
+
+                        </button>
+
+                        <div class="coll">
+                            <span name="progress">
+                                <b></b>
+                                <b></b>
+                                <b></b>
+                            </span>
+                        </div>
+
+                        <button id="video_mutedoff_btn" style="left:620px;background-image: url('img/voice.png')" onclick="mutedoff();">
+
+                        </button>
+
+                        <div class="voicecoll">
+                            <span name="vprogress">
+                                <b></b>
+                                <b></b>
+                                <b></b>
+                            </span>
+                        </div>
+
+                        <!--全屏-->
+                        <button id="video_full_btn" style="left: 860px;background-image: url('img/full.png')" onclick="showFull();">
+
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <video src=""></video>
+            <script src="./js/three.min.js"></script>
+            <script>
+                /*参数*/
+                /*相机、场景、渲染器*/
+                var camera, scene, renderer,video,flag,flagvoice;
+
+                var fillbool=false;
+
+                var texture_placeholder,
+                isUserInteracting = false,
+                onMouseDownMouseX = 0, onMouseDownMouseY = 0,
+                lon = 0, onMouseDownLon = 0,
+                lat = 0, onMouseDownLat = 0,
+                phi = 0, theta = 0,
+                distance = 50,
+                onPointerDownPointerX = 0,
+                onPointerDownPointerY = 0,
+                onPointerDownLon = 0,
+                onPointerDownLat = 0;
+
+                init();
+                animate();
+
+                function init() {
+
+                    var container, mesh;
+                    /*绑定div*/
+                    container = document.getElementById( 'container' );
+                    /*创建相机*/
+                    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1100 );
+                    camera.target = new THREE.Vector3( 0, 0, 0 );/*相机目标*/
+                    /*创建场景*/
+                    scene = new THREE.Scene();
+                    /*创建一个球*/
+                    var geometry = new THREE.SphereBufferGeometry( 500, 60, 40 );
+                    // invert the geometry on the x-axis so that all of the faces point inward
+                    geometry.scale( - 1, 1, 1 );/*球的大小*/
+                    /*创建一个video*/
+                    video = document.createElement( 'video' );
+                    video.width = 640;
+                    video.height = 360;
+                    video.loop = true;
+                    video.muted = false;
+                    video.autoplay=true;
+                    video.src = './video/car.mp4';
+                    video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+                    video.play();
+                    /*video.addEventListener("canplay",function() { video.currentTime = 50;});*/
+
+                    var texture = new THREE.VideoTexture( video );
+                    texture.minFilter = THREE.LinearFilter;
+                    texture.format = THREE.RGBFormat;
+
+                    var material   = new THREE.MeshBasicMaterial( { map : texture } );
+
+                    mesh = new THREE.Mesh( geometry, material );
+
+                    scene.add( mesh );
+
+                    renderer = new THREE.WebGLRenderer();
+                    renderer.setPixelRatio( window.devicePixelRatio );
+                    renderer.setSize( window.innerWidth, window.innerHeight );
+                    container.appendChild( renderer.domElement );
+
+                    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+                    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+                    document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+                    document.addEventListener( 'wheel', onDocumentMouseWheel, false );
+
+                    //
+
+                    window.addEventListener( 'resize', onWindowResize, false );
+
+                }
+
+                function onWindowResize() {
+
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+
+                    renderer.setSize( window.innerWidth, window.innerHeight );
+
+                }
+
+                function onDocumentMouseDown( event ) {
+
+                    event.preventDefault();
+
+                    isUserInteracting = true;
+
+                    onPointerDownPointerX = event.clientX;
+                    onPointerDownPointerY = event.clientY;
+
+                    onPointerDownLon = lon;
+                    onPointerDownLat = lat;
+
+                }
+
+                function onDocumentMouseMove( event ) {
+
+                    if ( isUserInteracting === true ) {
+
+                        lon = ( onPointerDownPointerX - event.clientX ) * 0.1 + onPointerDownLon;
+                        lat = ( event.clientY - onPointerDownPointerY ) * 0.1 + onPointerDownLat;
+
+                    }
+
+                }
+
+                function onDocumentMouseUp( event ) {
+
+                    isUserInteracting = false;
+
+                }
+
+                function onDocumentMouseWheel( event ) {
+
+                    distance += event.deltaY * 0.05;
+
+                    distance = THREE.Math.clamp( distance, 1, 50 );
+
+                }
+
+                function animate() {
+
+                    requestAnimationFrame( animate );
+                    update();
+
+                }
+
+                function update() {
+
+                    lat = Math.max( - 85, Math.min( 85, lat ) );
+                    phi = THREE.Math.degToRad( 90 - lat );
+                    theta = THREE.Math.degToRad( lon );
+
+                    camera.position.x = distance * Math.sin( phi ) * Math.cos( theta );
+                    camera.position.y = distance * Math.cos( phi );
+                    camera.position.z = distance * Math.sin( phi ) * Math.sin( theta );
+
+                    camera.lookAt( camera.target );
+
+                    renderer.render( scene, camera );
+
+                }
+                /*开始/暂停*/
+                function start() {
+                    if(video.paused==false){
+                        video.pause();
+                        $("#video_start_btn").css("background-image"," url('img/start.png')")
+                    }else{
+                        video.play();
+                        $("#video_start_btn").css("background-image"," url('img/stop.png')")
+                    }
+                }
+                function mutedoff(){
+                    if(video.muted==true){
+                        video.muted=false;
+                        $("#video_mutedoff_btn").css("background-image"," url('img/voice.png')")
+                    }else{
+                        video.muted=true;
+                        $("#video_mutedoff_btn").css("background-image"," url('img/voicess.png')")
+                    }
+
+                }
+
+               function showFull(){
+                   var full=document.getElementById("container");
+                   if(fillbool==false){
+                       launchIntoFullscreen(full);
+                       fillbool=true;
+                       $("#video_full_btn").css("background-image"," url('img/fullss.png')")
+                   }else{
+                       exitFullscreen();
+                       fillbool=false;
+                       $("#video_full_btn").css("background-image"," url('img/full.png')")
+                   }
+                }
+
+
+                function launchIntoFullscreen(element) {
+                    if(element.requestFullscreen){
+                        element.requestFullscreen();
+                    }
+                    else if(element.mozRequestFullScreen) {
+                        element.mozRequestFullScreen();
+                    }
+                    else if(element.webkitRequestFullscreen) {
+                        element.webkitRequestFullscreen();
+                    }
+                    else if(element.msRequestFullscreen) {
+                        element.msRequestFullscreen();
+                    }
+                }
+
+                function exitFullscreen() {
+                    if(document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if(document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if(document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                }
+
+
+                //视频进度条相关操作
+                var initProgressBar = function(){
+                    var main_div = $(".coll");
+                    var timeDrag = false;   /* Drag status */
+                    $("span[name='progress']",main_div).mousedown(function(e) {     //进度条的按下操作
+                        timeDrag = true;
+
+                        updatebar(e.pageX);
+                        e.stopPropagation();
+                    });
+                    $(document).mouseup(function(e) {               //松开
+                        if(timeDrag) {
+                            timeDrag = false;
+                            updatebar(e.pageX);
+                            e.stopPropagation();
+                        }
+                    });
+                    $(document).mousemove(function(e) {  //鼠标移动事件
+                        if(timeDrag) {
+
+                            updatebar(e.pageX);
+                            e.stopPropagation();
+                        }
+                    });
+
+                    //update Progress Bar control
+                    var updatebar = function(x) {  //更新时间与播放条进度
+                        var progress = $("span[name='progress']",main_div);
+                        var maxduration = video.duration; //Video duraiton 返回视频长度
+                        /*alert(progress.offset().left)*/
+                        var position = x - progress.offset().left; //Click pos
+                        var percentage = 100 * position / progress.width();
+                        /*alert(percentage)*/
+                        //Check within range    检查范围内
+                        if(percentage > 100) {
+                            percentage = 100;
+                        }
+                        if(percentage < 0) {
+                            percentage = 0;
+                        }
+                        //Update progress bar and video currenttime   更新进度条和视频时间
+                        $("span b:eq(0)",main_div).css('width', percentage+'%');
+                        video.currentTime = maxduration * percentage / 100;
+
+                    };
+
+                };
+
+                //声音进度条相关操作
+                var initvoiceBar = function(){
+                    var main_voicediv = $(".voicecoll");
+                    var voicetimeDrag = false;   /* Drag status */
+                    $("span[name='vprogress']",main_voicediv).mousedown(function(e) {     //进度条的按下操作
+                        voicetimeDrag = true;
+                        voiceupdatebar(e.pageX);
+                        e.stopPropagation();
+                    });
+                    $(document).mouseup(function(e) {               //松开
+                        if(voicetimeDrag) {
+                            voicetimeDrag = false;
+                            voiceupdatebar(e.pageX);
+                            e.stopPropagation();
+                        }
+                    });
+                    $(document).mousemove(function(e) {  //鼠标移动事件
+                        if(voicetimeDrag) {
+                            voiceupdatebar(e.pageX);
+                            e.stopPropagation();
+                        }
+                    });
+
+                    //update Progress Bar control
+                    var voiceupdatebar = function(x) {  //更新时间与播放条进度
+                        var progress = $("span[name='vprogress']",main_voicediv);
+                        var maxduration = 1; //Video duraiton 返回视频长度
+                        /*alert(progress.offset().left)*/
+                        var position = x - progress.offset().left; //Click pos
+                        var percentage = 100 * position / progress.width();
+                        /*alert(percentage)*/
+                        //Check within range    检查范围内
+                        if(percentage > 100) {
+                            percentage = 100;
+                        }
+                        if(percentage < 0) {
+                            percentage = 0;
+                        }
+                        //Update progress bar and video currenttime   更新进度条和视频时间
+                        $("span b:eq(0)",main_voicediv).css('width', percentage+'%');
+                        video.volume = maxduration * percentage / 100;
+
+                    };
+                };
+
+                var initVideo = function(player){
+                    flag = true;
+                    flagvoice = true;
+
+                    var main_div = $(".coll");
+                    var main_voicediv = $(".voicecoll");
+
+                    //实时更新播放进度条和时间
+                    video.ontimeupdate= function() {
+                        //视频进度条控制
+                        var currentPos = video.currentTime; //Get currenttime    //当前时间
+                        var maxduration = video.duration; //Get video duration   //总时间
+                        var percentage = 100 * currentPos / maxduration; //in %
+                        $("span b:eq(0)",main_div).css("width",percentage+"%");
+                       //音频进度条控制
+                        var currentPosvoice = video.volume; //Get currenttime    //当前时间
+                        var maxdurationvoice = 1; //Get video duration   //总时间
+                        var percentagevoice = 100 * currentPosvoice / maxdurationvoice; //in %
+                        $("span b:eq(0)",main_voicediv).css("width",percentagevoice+"%");
+                    };
+                    initProgressBar();
+                    initvoiceBar();
+                };
+
+                initVideo();
+
+            </script>
+        </body>
+    </html>
